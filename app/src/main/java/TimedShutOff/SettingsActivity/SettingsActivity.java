@@ -10,6 +10,7 @@ import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.pm.PackageManager;
+import android.os.Build;
 import android.os.Bundle;
 import android.provider.Settings;
 import android.view.View;
@@ -87,16 +88,27 @@ public class SettingsActivity extends AppCompatActivity
         // if setting is being set to true ->
         //      if no permission -> ask permission
         //      if permission -> update checked
-
         if(isChecked)
         {
             if(!PhoneSettings.HasBTPermissions(this))
             {
-                // TODO ask perms
                 new AlertDialog.Builder(this)
                         .setTitle("No Bluetooth Permission")
                         .setMessage("The app requires admin bluetooth permission in order to turn off the bluetooth.")
-                        .setNeutralButton("Close", null);
+                        .setNeutralButton("Close", (dialog, which) ->
+                        {
+                            String[] permissions;
+
+                            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S)
+                            {
+                                permissions = new String[] {Manifest.permission.BLUETOOTH_CONNECT, Manifest.permission.BLUETOOTH_ADMIN};
+                            }
+                            else
+                            {
+                                permissions = new String[] {Manifest.permission.BLUETOOTH_ADMIN};
+                            }
+                            requestPermissions(permissions,0);
+                        }).show();
             }
             else
             {

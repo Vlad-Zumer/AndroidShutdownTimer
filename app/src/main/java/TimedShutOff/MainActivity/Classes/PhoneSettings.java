@@ -1,6 +1,7 @@
 package TimedShutOff.MainActivity.Classes;
 
 import android.Manifest;
+import android.annotation.SuppressLint;
 import android.app.AlertDialog;
 import android.app.NotificationManager;
 import android.bluetooth.BluetoothAdapter;
@@ -8,12 +9,16 @@ import android.content.Context;
 import android.content.pm.PackageManager;
 import android.media.AudioManager;
 import android.net.wifi.WifiManager;
+import android.os.Build;
+import android.widget.Toast;
+
+import androidx.core.app.ActivityCompat;
 
 import TimedShutOff.Data.SettingsState;
 
 public class PhoneSettings
 {
-    public static void ChangeSettingsBasedOnPref(Context context)
+    public static void ChangeSettingsBasedOnPref (Context context)
     {
         try
         {
@@ -55,7 +60,15 @@ public class PhoneSettings
 
     public static boolean HasBTPermissions(Context context)
     {
-        return context.checkSelfPermission(Manifest.permission.BLUETOOTH_ADMIN) == PackageManager.PERMISSION_GRANTED;
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S)
+        {
+            return  context.checkSelfPermission(Manifest.permission.BLUETOOTH_ADMIN) == PackageManager.PERMISSION_GRANTED &&
+                    context.checkSelfPermission(Manifest.permission.BLUETOOTH_CONNECT) == PackageManager.PERMISSION_GRANTED;
+        }
+        else
+        {
+            return context.checkSelfPermission(Manifest.permission.BLUETOOTH_ADMIN) == PackageManager.PERMISSION_GRANTED;
+        }
     }
 
     public static boolean HasRingerPermissions(Context context)
