@@ -1,15 +1,22 @@
 package TimedShutOff.MainActivity.Classes;
 import androidx.appcompat.app.AppCompatActivity;
 
+import android.Manifest;
+import android.app.NotificationManager;
+import android.content.Context;
+import android.content.Intent;
+import android.content.pm.PackageManager;
 import android.os.Bundle;
 import android.os.CountDownTimer;
 import android.view.View;
 import android.widget.ProgressBar;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import java.util.HashMap;
 
 import TimedShutOff.Data.AppState;
+import TimedShutOff.SettingsActivity.SettingsActivity;
 import TimedShutOff.Utils.AlarmUtils;
 import TimedShutOff.Utils.ICountDownTimerListener;
 import TimedShutOff.Utils.TimerFinishedAggregator;
@@ -57,7 +64,7 @@ public class MainActivity extends AppCompatActivity implements ICountDownTimerLi
     {
         super.onResume();
         AppState.Instance.LoadAll(this);
-
+        
         if (AppState.Instance.GetIsTimerRunning())
         {
             long remainingSecs = AppState.Instance.GetRemainingTimeSec();
@@ -194,5 +201,11 @@ public class MainActivity extends AppCompatActivity implements ICountDownTimerLi
         UpdateTextView();
 
         TimerFinishedAggregator.OnTimeElapsed(this);
+    }
+
+    public void SettingsButtonClicked (View view)
+    {
+        Intent intent = new Intent(this, SettingsActivity.class);
+        startActivity(intent);
     }
 }

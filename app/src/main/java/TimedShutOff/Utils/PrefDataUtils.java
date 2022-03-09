@@ -10,6 +10,7 @@ public class PrefDataUtils
     public static final String TIMER_VALUE_ID = "TimedShutOff.TimerValue";
     public static final String TIME_REMAINING_ID = "TimedShutOff.TimeRemaining";
     public static final String ALARM_START_TIME_ID = "TimedShutOff.AlarmStartTime";
+    public static final String APP_SETTINGS_ID = "TimedShutOff.Settings";
 
     public static void StoreTimerStatus(Context context, boolean isRunning)
     {
@@ -65,5 +66,19 @@ public class PrefDataUtils
     {
         SharedPreferences pref = PreferenceManager.getDefaultSharedPreferences(context);
         return pref.getLong(ALARM_START_TIME_ID,0L);
+    }
+
+    public static void StoreSettingsValue (Context context, int settingsValue)
+    {
+        SharedPreferences pref = PreferenceManager.getDefaultSharedPreferences(context);
+        SharedPreferences.Editor editor = pref.edit();
+        editor.putInt(APP_SETTINGS_ID, settingsValue);
+        editor.apply();
+    }
+
+    public static int GetSettingsValue (Context context)
+    {
+        SharedPreferences pref = PreferenceManager.getDefaultSharedPreferences(context);
+        return pref.getInt(APP_SETTINGS_ID,0);
     }
 }

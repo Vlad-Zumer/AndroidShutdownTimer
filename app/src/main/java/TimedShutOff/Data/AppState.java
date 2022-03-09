@@ -6,7 +6,7 @@ import TimedShutOff.Utils.PrefDataUtils;
 
 public class AppState
 {
-    private AppState(){};
+    private AppState(){}
 
     public static AppState Instance = null;
     public static AppState CreateInstance()

@@ -2,11 +2,14 @@ package TimedShutOff.MainActivity.Classes;
 
 import android.Manifest;
 import android.app.AlertDialog;
+import android.app.NotificationManager;
 import android.bluetooth.BluetoothAdapter;
 import android.content.Context;
 import android.content.pm.PackageManager;
 import android.media.AudioManager;
 import android.net.wifi.WifiManager;
+
+import TimedShutOff.Data.SettingsState;
 
 public class PhoneSettings
 {
@@ -14,21 +17,22 @@ public class PhoneSettings
     {
         try
         {
-            // TODO make this better
-            if (context.checkSelfPermission(Manifest.permission.ACCESS_WIFI_STATE) == PackageManager.PERMISSION_GRANTED &&
-                context.checkSelfPermission(Manifest.permission.CHANGE_WIFI_STATE) == PackageManager.PERMISSION_GRANTED)
+            SettingsState.CreateInstance();
+            SettingsState.Instance.Load(context);
+
+            if (HasWifiPermissions(context) && SettingsState.Instance.GetShutdownWifiFlag())
             {
                 WifiManager wifiManager = context.getSystemService(WifiManager.class);
                 wifiManager.setWifiEnabled(false);
             }
 
-            if (context.checkSelfPermission(Manifest.permission.BLUETOOTH_ADMIN) == PackageManager.PERMISSION_GRANTED)
+            if (HasBTPermissions(context) && SettingsState.Instance.GetShutdownBTFlag())
             {
                 BluetoothAdapter bluetoothAdapter = BluetoothAdapter.getDefaultAdapter();
                 bluetoothAdapter.disable();
             }
 
-            if(context.checkSelfPermission(Manifest.permission.ACCESS_NOTIFICATION_POLICY) == PackageManager.PERMISSION_GRANTED)
+            if(HasRingerPermissions(context) && SettingsState.Instance.GetChangeRingerFlag())
             {
                 AudioManager audioManager = (AudioManager) context.getSystemService(Context.AUDIO_SERVICE);
                 audioManager.setRingerMode(AudioManager.RINGER_MODE_NORMAL);
@@ -37,9 +41,26 @@ public class PhoneSettings
         catch (Exception e)
         {
             new AlertDialog.Builder(context)
-                    .setTitle("Permission Error")
+                    .setTitle("Error")
                     .setMessage(e.toString())
                     .setPositiveButton("Ok", null).show();
         }
+    }
+
+    public static boolean HasWifiPermissions(Context context)
+    {
+        return  context.checkSelfPermission(Manifest.permission.ACCESS_WIFI_STATE) == PackageManager.PERMISSION_GRANTED &&
+                context.checkSelfPermission(Manifest.permission.CHANGE_WIFI_STATE) == PackageManager.PERMISSION_GRANTED;
+    }
+
+    public static boolean HasBTPermissions(Context context)
+    {
+        return context.checkSelfPermission(Manifest.permission.BLUETOOTH_ADMIN) == PackageManager.PERMISSION_GRANTED;
+    }
+
+    public static boolean HasRingerPermissions(Context context)
+    {
+        NotificationManager notificationManager = (NotificationManager) context.getSystemService(Context.NOTIFICATION_SERVICE);
+        return notificationManager.isNotificationPolicyAccessGranted();
     }
 }

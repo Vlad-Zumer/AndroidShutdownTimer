@@ -9,4 +9,5 @@
     <color name="white">#FFFFFFFF</color>
     <color name="background">#202020</color>
     <color name="textColor">#d9d9d9</color>
+    <color name="textColor_comment">#c0c0c0</color>
 </resources>
