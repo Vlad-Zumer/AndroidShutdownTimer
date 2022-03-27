@@ -34,7 +34,7 @@ public class PhoneSettings
             if (HasBTPermissions(context) && SettingsState.Instance.GetShutdownBTFlag())
             {
                 BluetoothAdapter bluetoothAdapter = BluetoothAdapter.getDefaultAdapter();
-                bluetoothAdapter.disable();
+                @SuppressLint("MissingPermission") boolean b = bluetoothAdapter.disable();
             }
 
             if(HasRingerPermissions(context) && SettingsState.Instance.GetChangeRingerFlag())

@@ -1,5 +1,6 @@
 package TimedShutOff.SettingsActivity;
 
+import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.SwitchCompat;
 
@@ -23,6 +24,8 @@ import TimedShutOff.MainActivity.Classes.R;
 
 public class SettingsActivity extends AppCompatActivity
 {
+
+    private static final int PERMISSION_REQ_CODE = 122;
 
     @Override
     protected void onCreate (Bundle savedInstanceState)
@@ -67,7 +70,11 @@ public class SettingsActivity extends AppCompatActivity
                 new AlertDialog.Builder(this)
                         .setTitle("No Wifi Permission")
                         .setMessage("The app requires admin wifi permission in order to turn off the wifi.")
-                        .setNeutralButton("Close", null);
+                        .setNeutralButton("Close", (dialog, which) ->
+                        {
+                            String[] permissions = new String[] {Manifest.permission.ACCESS_WIFI_STATE, Manifest.permission.CHANGE_WIFI_STATE};
+                            requestPermissions(permissions,PERMISSION_REQ_CODE);
+                        }).show();
             }
             else
             {
@@ -107,7 +114,7 @@ public class SettingsActivity extends AppCompatActivity
                             {
                                 permissions = new String[] {Manifest.permission.BLUETOOTH_ADMIN};
                             }
-                            requestPermissions(permissions,0);
+                            requestPermissions(permissions,PERMISSION_REQ_CODE);
                         }).show();
             }
             else
@@ -188,4 +195,13 @@ public class SettingsActivity extends AppCompatActivity
         }
     }
 
+    @Override
+    public void onRequestPermissionsResult (int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults)
+    {
+        super.onRequestPermissionsResult(requestCode, permissions, grantResults);
+        if (requestCode == PERMISSION_REQ_CODE)
+        {
+            UpdateSwitches();
+        }
+    }
 }

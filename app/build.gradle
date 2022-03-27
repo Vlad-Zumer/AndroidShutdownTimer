@@ -9,11 +9,16 @@ android {
     defaultConfig {
         applicationId "TimedShutOff.MainActivity.timedshutoff"
         minSdkVersion 26
+        //noinspection ExpiredTargetSdkVersion
         targetSdkVersion 28
         versionCode 1
         versionName "1.0"
 
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
+    }
+
+    lintOptions {
+        checkReleaseBuilds false
     }
 
     buildTypes {
